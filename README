@@ -1,0 +1,21 @@
+dotfiles
+--------
+
+OpenBSD dotfiles repository.
+
+Philosophy:
+  - Minimalist: override defaults only when necessary
+  - Portable: POSIX-compliant, works on BSDs/Linux
+  - Base tools: find, sed, cp, diff, ln, grep
+  - Terminal-first: no GUI, no external dependencies
+
+Tools:
+  - Editor: nvi/vim, with .exrc/.vimrc
+  - Window manager: cwm
+  - Terminal/shell: xterm/ksh
+
+Install:
+  # Copy all dotfiles and scripts to $HOME (except .gitignore/README that are repo specific)
+  find . -mindepth 1 -maxdepth 1 \
+    ! -name '.gitignore' ! -name 'README' \
+    -exec cp -r {} ~ \;
