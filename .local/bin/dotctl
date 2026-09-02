@@ -1,0 +1,145 @@
+#!/bin/sh
+#  Minimalist unobtrusive dotfiles manager (2026-09-14)
+
+set -o errexit
+set -o nounset
+
+# =====================================================================
+# CONFIGURATION
+# =====================================================================
+DOT_REPODIR=${DOT_REPODIR:-"$HOME/.dotfiles"}
+DOT_LOCALDIR=${DOT_LOCALDIR:-"$HOME"}
+DOT_EXCLUDE=${DOT_EXCLUDE:-"README|TODO|\.gitignore|\.git($|/)"}
+
+FORCE=0
+DRY_RUN=0
+
+# =====================================================================
+# HELPER FUNCTIONS
+# =====================================================================
+usage() {
+    cat <<EOF
+Usage: dotctl [ -n ] [ -f ] <push|pull|status|diff> [DOTFILE...]
+
+Options:
+  -n  Dry-run
+  -f  Force overwrite if destination is newer than source
+
+Commands:
+  status    Check status
+  diff      Show differences
+  push      Copy repo -> local
+  pull      Copy local -> repo
+
+Environement variables
+  DOT_REPODIR    Location of dotfiles ($DOT_REPODIR)
+  DOT_LOCALDIR   Location of dotfiles deployement target ($DOT_LOCALDIR)
+  DOT_EXCLUDE    Regex pattern to exclude files ($DOT_EXCLUDE)
+EOF
+}
+
+_ls_dotfiles() {
+    [ -d "$DOT_REPODIR" ] || { printf "Error: %s is not a directory\n" "$DOT_REPODIR" >&2; exit 1; }
+    (cd "$DOT_REPODIR" && find . \( -type f -o -type l \) -print | sed 's|^\./||' | grep -vE "$DOT_EXCLUDE")
+}
+
+_install_dotfile() {
+    src="$1"; dst="$2"
+    mkdir -p "$(dirname "$dst")"
+    cp -p "$src" "$dst"
+}
+
+_sync_dotfile() {
+    src="$1"; dst="$2"; dotfile="$3"
+
+    [ -e "$src" ] || { printf "[ERROR] %s does not exist\n" "$src" >&2; return 1; }
+
+    # Resolve symlink target for comparisons
+    real_dst="$dst"
+    if [ -L "$dst" ]; then
+        real_dst=$(readlink "$dst" 2>/dev/null || echo "$dst")
+    fi
+
+    if [ -e "$dst" ]; then
+        if cmp -s "$src" "$real_dst"; then
+            return 0
+        fi
+        if [ "$FORCE" -eq 0 ] && [ "$real_dst" -nt "$src" ]; then
+            printf "[KEEP] %s (newer, use -f to force overwrite)\n" "$dotfile" >&2
+            return 0
+        fi
+
+		printf "[REPL] %s\n" "$dotfile"
+		[ "$DRY_RUN" -eq 0 ] && _install_dotfile "$src" "$dst"
+        return 0
+    fi
+
+    printf "[COPY] %s\n" "$dotfile"
+	[ "$DRY_RUN" -eq 0 ] && _install_dotfile "$src" "$dst"
+}
+
+_diff_dotfile() {
+    src="$1"; dst="$2"
+	printf "=== %s ===\n" "$src"
+	diff -u "$src" "$dst" || true
+}
+
+
+# =====================================================================
+# COMMANDS
+# =====================================================================
+cmd_status() {
+	DRY_RUN=1
+	for f in "$@"; do
+		_sync_dotfile "$DOT_REPODIR/$f" "$DOT_LOCALDIR/$f" "$f"
+	done
+}
+
+cmd_diff() {
+	for f in "$@"; do
+		_diff_dotfile "$DOT_REPODIR/$f" "$DOT_LOCALDIR/$f"
+	done
+}
+
+cmd_push() {
+	[ "$DRY_RUN" -eq 1 ] && printf "**DRY RUN - no files will be modified**\n"
+
+	for f in "$@"; do
+		_sync_dotfile "$DOT_REPODIR/$f" "$DOT_LOCALDIR/$f" "$f"
+	done
+}
+
+cmd_pull() {
+	[ "$DRY_RUN" -eq 1 ] && printf "**DRY RUN - no files will be modified**\n"
+
+	for f in "$@"; do
+		_sync_dotfile "$DOT_LOCALDIR/$f" "$DOT_REPODIR/$f" "$f"
+	done
+}
+
+# =====================================================================
+# MAIN
+# =====================================================================
+# Parse args
+while getopts "nf" opt; do
+    case "$opt" in
+        f) FORCE=1 ;;
+        n) DRY_RUN=1 ;;
+        *) usage && exit 2 ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+cmd="${1:-status}"
+[ $# -gt 0 ] && shift
+
+# shellcheck disable=SC2046
+[ $# -eq 0 ] && set -- $(_ls_dotfiles)
+
+case "$cmd" in
+    status) cmd_status "$@" ;;
+    diff)   cmd_diff "$@" ;;
+    push)   cmd_push "$@" ;;
+    pull)   cmd_pull "$@" ;;
+    *) usage && exit 2 ;;
+esac

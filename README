@@ -1,21 +1,41 @@
 dotfiles
 --------
 
-OpenBSD dotfiles repository.
+Minimalist, terminal-first dotfiles repository.
 
 Philosophy:
-  - Minimalist: override defaults only when necessary
-  - Portable: POSIX-compliant, works on BSDs/Linux
-  - Base tools: find, sed, cp, diff, ln, grep
-  - Terminal-first: no GUI, no external dependencies
+  - Use OpenBSD base as much as possible
+  - Override defaults only when necessary
+  - Terminal-first
+  - Portable across BSDs/Linux as far as possible
 
-Tools:
-  - Editor: nvi/vim, with .exrc/.vimrc
-  - Window manager: cwm
-  - Terminal/shell: xterm/ksh
 
-Install:
-  # Copy all dotfiles and scripts to $HOME (except .gitignore/README that are repo specific)
-  find . -mindepth 1 -maxdepth 1 \
-    ! -name '.gitignore' ! -name 'README' \
-    -exec cp -r {} ~ \;
+Structure:
+  .local/bin/                  Helper scripts (see below)
+
+Scripts (.local/bin/):
+  dotctl    Dotfiles manager (push/pull/status/diff)
+
+Management:
+  With supplied tool dotctl:
+    Bootstrap from repo root: ./.local/bin/dotctl push
+    Then, dotctl should be in the PATH:
+      dotctl push    # Update local dotfiles from repo
+      dotctl pull    # Update repo from modified local dotfiles
+      dotctl status  # Check differences
+      dotctl diff    # Show differences
+    Options:
+      -n  Dry-run (show what would change)
+      -f  Force overwrite if destination is newer
+
+  Alternative (manual):
+    Copy or symlink files from the repo root to $HOME.
+    Ensure ~/.local/bin is in PATH for the scripts.
+
+  Alternative (git bare repo):
+    git init --bare $HOME/.dotfiles
+    alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+    dotfiles config --local status.showUntrackedFiles no
+
+License:
+  MIT
