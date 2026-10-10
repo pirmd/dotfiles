@@ -3,14 +3,24 @@ dotfiles
 
 Minimalist, terminal-first dotfiles repository.
 
-Philosophy:
+Philosophy: 
   - Use OpenBSD base as much as possible
   - Override defaults only when necessary
   - Terminal-first
   - Portable across BSDs/Linux as far as possible
 
+Choices:
+  - Shell:    ksh (POSIX mode, vi bindings)
+  - Terminal: xterm with Selenized light color scheme (https://github.com/jan-warchol/selenized)
+  - Editor:   vim with minimal highlighting (kind of '4-color philosophy')
+  - WM:       cwm (lightweight, keyboard-driven)
 
 Structure:
+  .profile .kshrc .exrc        Shell configuration
+  .vimrc .vim/colors/4term.vim Editor configuration
+  .Xresources                  X11 resources (full 16-color Selenized palette)
+  .xsession                    X session startup (xrdb, keymap, TrackPoint, alert monitor)
+  .cwmrc                       Window manager configuration
   .local/bin/                  Helper scripts (see below)
 
 Scripts (.local/bin/):

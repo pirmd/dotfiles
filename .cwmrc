@@ -1,0 +1,73 @@
+# .cwmrc (2022-10-27)
+
+sticky yes
+
+fontname "monospace:size=8"
+borderwidth 2
+
+color activeborder    "#53676d"
+color inactiveborder  "#909995"
+color urgencyborder   "#d2212d"
+
+color menubg          "#fbf3db"
+color menufg          "#53676d"
+
+color font            "#53676d"
+color selfont         "#fbf3db"
+
+#-----------------------------------------------------------------------------
+#---+ Autogroups
+#-----------------------------------------------------------------------------
+autogroup 3 firefox
+autogroup 5 log
+
+#-----------------------------------------------------------------------------
+#---+ Keybindings
+#-----------------------------------------------------------------------------
+# C  Control key.
+# M  Meta (Alt) key.
+# S  Shift key.
+# 4  "windows" key.
+# 5  AltGr key.
+unbind-key      all
+
+bind-key M-ampersand    group-only-1
+bind-key M-eacute       group-only-2
+bind-key M-quotedbl     group-only-3
+bind-key M-apostrophe   group-only-4
+bind-key M-parenleft    group-only-5
+
+bind-key MS-ampersand    window-movetogroup-1
+bind-key MS-eacute       window-movetogroup-2
+bind-key MS-quotedbl     window-movetogroup-3
+bind-key MS-apostrophe   window-movetogroup-4
+bind-key MS-parenleft    window-movetogroup-5
+
+bind-key M-t    window-vtile
+bind-key MS-t   window-htile
+bind-key M-f    window-maximize
+bind-key M-h    window-cycle
+bind-key M-l    window-rcycle
+bind-key MS-h   window-move-left-big
+bind-key MS-l   window-move-right-big
+bind-key MS-k   window-move-up-big
+bind-key MS-j   window-move-down-big
+
+bind-key MS-c  window-close
+bind-key MS-q  quit
+bind-key MS-s  "/sbin/shutdown -hp now"
+
+bind-key 4-b  "xterm -geometry 46x9+450+250 -e status"
+bind-key 4-l  "xlock"
+bind-key 4-s  "xterm -class 'log' -hold -e syncme"
+bind-key 4-t  "xterm -geometry 90x12"
+bind-key 4-w  "firefox"
+bind-key 4-x  "menu-exec"
+
+#-----------------------------------------------------------------------------
+#---+ Mousebindings
+#-----------------------------------------------------------------------------
+unbind-mouse all
+
+bind-mouse M-1 window-move
+bind-mouse M-3 window-resize
