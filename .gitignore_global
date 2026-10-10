@@ -1,0 +1,49 @@
+# Editor artifacts
+*.swp
+
+# Core dumps
+*.core
+
+# Mistral Vibe
+.vibe/
+AGENTS.md
+
+# Local temporary files
+TODO*
+
+# ==== Security ================================================================
+
+# SSH keys (private and public)
+.ssh/
+id_*
+
+# GPG keys
+*.gpg*
+*.asc
+
+# API keys / Certificates
+*.key
+*.pem
+*.priv
+*.p12
+*.pfx
+*.crt
+*.cer
+
+# Environment files
+.env*
+*.env
+
+# Shell history (may contain typed secrets)
+.*history*
+
+# Log files (may contain sensitive data)
+*.log
+
+# Database files
+*.db
+*.sqlite*
+
+# Local cache
+.cache/
+

@@ -1,0 +1,11 @@
+[user]
+	name = Πrmd
+	email = pirmd@users.noreply.github.com
+[core]
+	editor = vim
+	excludesfile = ~/.gitignore_global
+	pager =
+[alias]
+	ll = log --oneline --reverse
+[commit]
+	template = ~/.gitmessage

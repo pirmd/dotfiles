@@ -1,51 +1,6 @@
 # =====================================================================
-# Sensitive data
-# =====================================================================
-.ssh/
-.apn.db
-
-# Databases
-*.db
-*.sqlite
-*.sqlite3
-
-# Keys and certificates
-*.key
-*.pem
-*.priv
-*.pub
-*.crt
-*.cer
-
-# SSH private keys (even outside .ssh/)
-id_*
-id_rsa
-id_dsa
-id_ecdsa
-id_ed25519
-
-# Environment files (may contain API keys, passwords)
-.env
-.env.*
-*.env
-
-# Shell history (may contain typed secrets)
-.history
-.bash_history
-.ksh_history
-.zsh_history
-
-# cache and logs
-.cache/
-*.log
-
-# =====================================================================
 # Temporary or machine-specific files
 # =====================================================================
-# macOS
-.DS_Store
-
-# Editor backups
-*.swp
+# Editor backups (complementary to *.swp in global)
 *.swo
 *~

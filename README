@@ -3,7 +3,7 @@ dotfiles
 
 Minimalist, terminal-first dotfiles repository.
 
-Philosophy: 
+Philosophy:
   - Use OpenBSD base as much as possible
   - Override defaults only when necessary
   - Terminal-first
@@ -21,6 +21,8 @@ Structure:
   .Xresources                  X11 resources (full 16-color Selenized palette)
   .xsession                    X session startup (xrdb, keymap, TrackPoint, alert monitor)
   .cwmrc                       Window manager configuration
+  .gitconfig .gitmessage       Git configuration
+  .gitignore .gitignore_global Git ignore files
   .local/bin/                  Helper scripts (see below)
 
 Scripts (.local/bin/):
