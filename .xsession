@@ -16,4 +16,8 @@ setxkbmap fr
 xbacklight -set 30
 xsetroot -solid '#3a4d53'
 xidle -timeout 120 &
+
+# Alert monitor (every 5 min)
+( while :; do alert 2>&1 | xnotify; sleep 300; done ) &
+
 exec cwm || exit 1

@@ -1,0 +1,44 @@
+#!/bin/sh
+#  xnotify (2026-10-24) - poorman-notify: popup xterm centree
+#
+# Examples:
+#   xnotify -- "test"
+#   xnotify -geometry 80x20+100+100 -- "test"
+#   echo "hello" | xnotify -bg '#d2212d' -fg '#fbf3db'
+#   alert 2>&1 | timeout 10 xnotify
+
+set -eu
+
+xterm_args=""
+while [ $# -gt 0 ]; do
+	case "$1" in
+		--) shift; break ;;
+		-*) xterm_args="$xterm_args $1"; shift ;;
+		*)  break ;;
+	esac
+done
+
+if [ $# -gt 0 ]; then
+	msg="$*"
+else
+	msg=$(cat)
+fi
+[ -n "$msg" ] || exit 0
+
+# shellcheck disable=SC2086
+xterm -bw 0 -geometry 40x5+500+300 $xterm_args -e sh -c '
+	msg="$1"
+	tput civis
+
+	width=$(tput cols)
+	col=$(( (width - ${#msg}) / 2 ))
+	[ "$col" -lt 0 ] && col=0
+	height=$(tput lines)
+	row=$(( (height - 1) / 2 ))
+	tput cup "$row" "$col"
+
+	printf "%s" "$msg"
+
+	stty raw -echo
+	dd bs=1 count=1 >/dev/null 2>&1
+' sh "$msg"

@@ -1,0 +1,27 @@
+#!/bin/sh
+#  Minimal system alert monitor (2022-01-28)
+
+set -eu
+
+bat() {
+	_lvl=$(apm -b 2>/dev/null) || return 1
+	case "$_lvl" in 1|2) return 1 ;; *) return 0 ;; esac
+}
+
+disk() {
+	_df=$(df -P "$1" 2>/dev/null) || return 1
+	printf '%s\n' "$_df" | awk 'NR==2 {sub(/%/, ""); exit ($5 >= 90)}'
+}
+
+is_online() {
+	ping -c1 -w1 "$1" >/dev/null 2>&1
+}
+
+die() { printf 'Alert: %s\n' "$1" >&2; exit 1; }
+
+# --- MAIN ---
+bat || die "battery low"
+disk / || die "/ disk full"
+disk /var || die "/var disk full"
+disk /home || die "/home disk full"
+is_online nas.home || die "nas.home unreachable"

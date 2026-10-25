@@ -27,6 +27,11 @@ Structure:
 
 Scripts (.local/bin/):
   dotctl    Dotfiles manager (push/pull/status/diff)
+  alert     System alert monitor (battery, disk, network)
+  xnotify   Poorman-notify: centered xterm popup for messages
+
+  The alert monitor runs in the background from .xsession:
+    ( while :; do alert 2>&1 | xnotify; sleep 300; done ) &
 
 Management:
   With supplied tool dotctl:
